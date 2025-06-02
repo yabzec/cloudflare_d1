@@ -1,0 +1,21 @@
+name: cloudflare_d1
+description: "A Flutter package for interacting with Cloudflare D1 databases through REST API and Worker endpoints."
+version: 1.0.0
+homepage:
+
+environment:
+  sdk: ^3.9.0-172.0.dev
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  meta: ^1.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
