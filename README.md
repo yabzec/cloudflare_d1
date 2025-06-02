@@ -19,8 +19,8 @@ Add this to your package's `pubspec.yaml` file:
 dependencies:
   cloudflare_d1:
     git:
-      url: https://github.com/username/repository.git
-      ref: nome-branch
+      url: https://github.com/yabzec/cloudflare_d1.git
+      ref: main
 ```
 
 Then run:
