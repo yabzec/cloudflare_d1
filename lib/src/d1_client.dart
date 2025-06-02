@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
-import 'models/d1_response.dart';
-import 'models/d1_query.dart';
-import 'models/d1_config.dart';
+import 'package:http/http.dart' as http;
+
 import 'exceptions/d1_exception.dart';
+import 'models/d1_config.dart';
+import 'models/d1_query.dart';
+import 'models/d1_response.dart';
 
 class D1Client {
   final D1Config _config;
@@ -59,7 +59,7 @@ class D1Client {
         throw D1Exception('API Error', errorMessage);
       }
 
-      return D1Response.fromJson(data['result']);
+      return D1Response.fromJson(data['result'][0]);
     } catch (e) {
       if (e is D1Exception) rethrow;
       throw D1Exception('Network error', e.toString());
