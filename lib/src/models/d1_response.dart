@@ -38,10 +38,7 @@ class D1Response {
   }
 
   factory D1Response.error(String error) {
-    return D1Response(
-      success: false,
-      error: error,
-    );
+    return D1Response(success: false, error: error);
   }
 
   factory D1Response.fromJson(Map<String, dynamic> json) {
@@ -116,6 +113,7 @@ class D1Meta {
   final int? rowsRead;
   final int? rowsWritten;
   final int? sizeAfter;
+  final int? lastRowId;
   final List<String>? columns;
   final double? duration;
 
@@ -123,6 +121,7 @@ class D1Meta {
     this.sql,
     this.rowsRead,
     this.rowsWritten,
+    this.lastRowId,
     this.sizeAfter,
     this.columns,
     this.duration,
@@ -133,6 +132,7 @@ class D1Meta {
       sql: json['sql'] as String?,
       rowsRead: json['rows_read'] as int?,
       rowsWritten: json['rows_written'] as int?,
+      lastRowId: json['last_row_id'] as int?,
       sizeAfter: json['size_after'] as int?,
       columns: (json['columns'] as List<dynamic>?)?.cast<String>(),
       duration: (json['duration'] as num?)?.toDouble(),
@@ -144,6 +144,7 @@ class D1Meta {
       if (sql != null) 'sql': sql,
       if (rowsRead != null) 'rows_read': rowsRead,
       if (rowsWritten != null) 'rows_written': rowsWritten,
+      if (lastRowId != null) 'last_row_id': lastRowId,
       if (sizeAfter != null) 'size_after': sizeAfter,
       if (columns != null) 'columns': columns,
       if (duration != null) 'duration': duration,
