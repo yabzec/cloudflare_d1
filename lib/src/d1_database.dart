@@ -13,28 +13,33 @@ class D1Database {
     return _client.query(sql, params);
   }
 
-  Future<D1Response> insert(
-      String table,
-      Map<String, dynamic> data,
-      ) async {
+  Future<D1Response> insert(String table, Map<String, dynamic> data) async {
     final columns = data.keys.toList();
     final placeholders = List.generate(columns.length, (i) => '?').join(', ');
-    final sql = 'INSERT INTO $table (${columns.join(', ')}) VALUES ($placeholders)';
+    final sql =
+        'INSERT INTO $table (${columns.join(', ')}) VALUES ($placeholders)';
 
     return _client.query(sql, data.values.toList());
   }
 
   Future<List<Map<String, dynamic>>> select(
-      String table, {
-        List<String>? columns,
-        String? where,
-        List<dynamic>? whereParams,
-        String? orderBy,
-        int? limit,
-        int? offset,
-      }) async {
+    String table, {
+    List<String>? columns,
+    String? where,
+    List<dynamic>? whereParams,
+    String? orderBy,
+    int? limit,
+    int? offset,
+    bool distinct = false,
+  }) async {
     final columnsStr = columns?.join(', ') ?? '*';
-    final sql = StringBuffer('SELECT $columnsStr FROM $table');
+    final sql = StringBuffer('SELECT');
+
+    if (distinct) {
+      sql.write(' DISTINCT');
+    }
+
+    sql.write(' $columnsStr FROM $table');
 
     final params = <dynamic>[];
 
@@ -57,16 +62,19 @@ class D1Database {
       sql.write(' OFFSET $offset');
     }
 
-    final response = await _client.query(sql.toString(), params.isNotEmpty ? params : null);
+    final response = await _client.query(
+      sql.toString(),
+      params.isNotEmpty ? params : null,
+    );
     return response.allResults;
   }
 
   Future<D1Response> update(
-      String table,
-      Map<String, dynamic> data, {
-        required String where,
-        List<dynamic>? whereParams,
-      }) async {
+    String table,
+    Map<String, dynamic> data, {
+    required String where,
+    List<dynamic>? whereParams,
+  }) async {
     final setClauses = data.keys.map((key) => '$key = ?').join(', ');
     final sql = 'UPDATE $table SET $setClauses WHERE $where';
 
@@ -79,19 +87,19 @@ class D1Database {
   }
 
   Future<D1Response> delete(
-      String table, {
-        required String where,
-        List<dynamic>? whereParams,
-      }) {
+    String table, {
+    required String where,
+    List<dynamic>? whereParams,
+  }) {
     final sql = 'DELETE FROM $table WHERE $where';
     return _client.query(sql, whereParams);
   }
 
   Future<int> count(
-      String table, {
-        String? where,
-        List<dynamic>? whereParams,
-      }) async {
+    String table, {
+    String? where,
+    List<dynamic>? whereParams,
+  }) async {
     final sql = StringBuffer('SELECT COUNT(*) as count FROM $table');
 
     if (where != null) {
@@ -125,12 +133,12 @@ class D1Database {
   }
 
   Future<D1Response> createTable(
-      String tableName,
-      Map<String, String> columns, {
-        String? primaryKey,
-        List<String>? uniqueColumns,
-        Map<String, String>? foreignKeys,
-      }) {
+    String tableName,
+    Map<String, String> columns, {
+    String? primaryKey,
+    List<String>? uniqueColumns,
+    Map<String, String>? foreignKeys,
+  }) {
     final columnDefinitions = <String>[];
 
     columns.forEach((name, type) {
@@ -167,11 +175,11 @@ class D1Database {
   }
 
   Future<Map<String, dynamic>?> findById(
-      String table,
-      dynamic id, {
-        String idColumn = 'id',
-        List<String>? columns,
-      }) async {
+    String table,
+    dynamic id, {
+    String idColumn = 'id',
+    List<String>? columns,
+  }) async {
     final results = await select(
       table,
       columns: columns,
@@ -184,13 +192,13 @@ class D1Database {
   }
 
   Future<List<Map<String, dynamic>>> findBy(
-      String table,
-      String field,
-      dynamic value, {
-        List<String>? columns,
-        String? orderBy,
-        int? limit,
-      }) {
+    String table,
+    String field,
+    dynamic value, {
+    List<String>? columns,
+    String? orderBy,
+    int? limit,
+  }) {
     return select(
       table,
       columns: columns,
@@ -202,21 +210,25 @@ class D1Database {
   }
 
   Future<bool> exists(
-      String table, {
-        String? where,
-        List<dynamic>? whereParams,
-      }) async {
-    final count = await this.count(table, where: where, whereParams: whereParams);
+    String table, {
+    String? where,
+    List<dynamic>? whereParams,
+  }) async {
+    final count = await this.count(
+      table,
+      where: where,
+      whereParams: whereParams,
+    );
     return count > 0;
   }
 
   Future<Map<String, dynamic>?> first(
-      String table, {
-        List<String>? columns,
-        String? where,
-        List<dynamic>? whereParams,
-        String? orderBy,
-      }) async {
+    String table, {
+    List<String>? columns,
+    String? where,
+    List<dynamic>? whereParams,
+    String? orderBy,
+  }) async {
     final results = await select(
       table,
       columns: columns,
