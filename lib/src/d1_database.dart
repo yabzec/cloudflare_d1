@@ -31,6 +31,7 @@ class D1Database {
     int? limit,
     int? offset,
     bool distinct = false,
+    String? groupBy,
   }) async {
     final columnsStr = columns?.join(', ') ?? '*';
     final sql = StringBuffer('SELECT');
@@ -48,6 +49,10 @@ class D1Database {
       if (whereParams != null) {
         params.addAll(whereParams);
       }
+    }
+
+    if (groupBy != null) {
+      sql.write(' GROUP BY $groupBy');
     }
 
     if (orderBy != null) {
@@ -180,11 +185,11 @@ class D1Database {
     String idColumn = 'id',
     List<String>? columns,
   }) async {
-    final results = await select(
+    final results = await findBy(
       table,
+      idColumn,
+      id,
       columns: columns,
-      where: '$idColumn = ?',
-      whereParams: [id],
       limit: 1,
     );
 
