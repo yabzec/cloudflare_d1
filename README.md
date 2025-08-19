@@ -11,7 +11,7 @@ A Flutter package for interacting with Cloudflare D1 databases via REST API.
 - ✅ **Prepared Statements**: Support for parameterized queries
 - ✅ **Schema Management**: Table creation, modification, and introspection
 
-## Installation
+## Installing
 
 Add this to your package's `pubspec.yaml` file:
 
